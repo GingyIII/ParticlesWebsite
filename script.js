@@ -91,6 +91,29 @@ function init(){
     }
 }
 
+// check if particles are close enough to draw line between them
+function connect(){
+    let opacityValue = 1;
+    for(let a = 0; a < particlesArray.length; a++){
+        for(let b = a; b < particlesArray.length; b++){
+            let distance = ((particlesArray[a].x - particlesArray[b].x) 
+            * (particlesArray[a].x - particlesArray[b].x)) 
+            + ((particlesArray[a].y - particlesArray[b].y) * 
+            (particlesArray[a].y - particlesArray[b].y));
+
+            if(distance < (canvas.width/7) * (canvas.height/7)){
+                opacityValue = 1 - (distance/20000);
+                ctx.strokeStyle='rgb(140, 85, 31, 1),' + opacityValue + ')';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
 // animation loop
 function animate(){
     requestAnimationFrame(animate);
@@ -103,25 +126,24 @@ function animate(){
     connect();
 }
 
-// check if particles are close enough to draw line between them
-function connect(){
-    for(let a = 0; a < particlesArray.length; a++){
-        for(let b = a; b < particlesArray.length; b++){
-            let distance = ((particlesArray[a].x - particlesArray[b].x) 
-            * (particlesArray[a].x - particlesArray[b].x)) 
-            + ((particlesArray[a].x) - particlesArray[b].y) * 
-            (particlesArraypa[a].y - particlesArray[b].y);
-            if(distance < (canvas.width/7) * (canvas.height/7)){
-                ctx.strokeStyle='rgb(140, 85, 31, 1)';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                ctx.stroke();
-            }
-        }
+//resize event
+window.addEventListener('resize', 
+    function(){
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        mouse.radius = ((canvas.height/80) * (canvas.height/80));
+        init();
     }
-}
+);
+
+//mouse event
+window.addEventListener('mouseout', 
+    function(){
+        mouse.x = undefined;
+        mouse.y = undefined;
+    }
+)
+
 
 
 init();
